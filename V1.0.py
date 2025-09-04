@@ -19,4 +19,19 @@ class DatabaseManager:
         self.db_name = db_name
         self.init_database()
         
-    
+    def init_database(self):
+        """Initialize the database and create tables"""
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        
+        # Create customers table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS customers (
+                customer_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                customer_name TEXT NOT NULL,
+                phone TEXT,
+                email TEXT,
+                address TEXT,
+                created_date DATE DEFAULT CURRENT_DATE
+            )
+        ''')
