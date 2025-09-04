@@ -99,5 +99,22 @@ class DatabaseManager:
         conn.commit()
         conn.close()
         
+    def save_rental(self, rental_data):
+        """Save rental data to database"""
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            INSERT INTO rentals (
+                customer_id, receipt_ref, product_type, product_code, no_days, cost_per_day,
+                account_open, app_date, next_credit_review, last_credit_review, date_rev,
+                credit_limit, credit_check, sett_due_day, payment_due, discount, deposit,
+                pay_due_day, payment_method, check_credit, term_agreed, account_on_hold,
+                restrict_mailing, tax, subtotal, total
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', rental_data)
+        
+        conn.commit()
+        conn.close()
         
         
