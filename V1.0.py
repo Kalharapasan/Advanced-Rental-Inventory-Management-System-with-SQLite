@@ -12,3 +12,11 @@ import pandas as pd
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import os
+
+
+class DatabaseManager:
+    def __init__(self, db_name="rental_inventory.db"):
+        self.db_name = db_name
+        self.init_database()
+        
+    
