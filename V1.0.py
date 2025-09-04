@@ -36,7 +36,7 @@ class DatabaseManager:
                 created_date DATE DEFAULT CURRENT_DATE
             )
         ''')
-    # Create rentals table
+        # Create rentals table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS rentals (
                 rental_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,6 +82,22 @@ class DatabaseManager:
                 status TEXT DEFAULT 'Available'
             )
         ''')
+        # Insert default products if they don't exist
+        default_products = [
+            ('Car', 'CAR452', 12.00, 5),
+            ('Van', 'VAN775', 19.00, 3),
+            ('Minibus', 'MIN334', 12.00, 2),
+            ('Truck', 'TRK7483', 15.00, 2)
+        ]
+        
+        for product in default_products:
+            cursor.execute('''
+                INSERT OR IGNORE INTO products (product_type, product_code, cost_per_day, available_quantity)
+                VALUES (?, ?, ?, ?)
+            ''', product)
+        
+        conn.commit()
+        conn.close()
         
         
         
