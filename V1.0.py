@@ -116,5 +116,14 @@ class DatabaseManager:
         
         conn.commit()
         conn.close()
+    
+    def get_all_rentals(self):
+        """Get all rental records"""
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM rentals ORDER BY created_date DESC')
+        results = cursor.fetchall()
+        conn.close()
+        return results
         
         
