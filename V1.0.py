@@ -1,5 +1,6 @@
-import tkinter as tk
 from tkinter import *
+import sqlite3
+import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 import sqlite3
 import random
@@ -35,3 +36,52 @@ class DatabaseManager:
                 created_date DATE DEFAULT CURRENT_DATE
             )
         ''')
+    # Create rentals table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS rentals (
+                rental_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                customer_id INTEGER,
+                receipt_ref TEXT UNIQUE,
+                product_type TEXT,
+                product_code TEXT,
+                no_days INTEGER,
+                cost_per_day REAL,
+                account_open TEXT,
+                app_date DATE,
+                next_credit_review DATE,
+                last_credit_review INTEGER,
+                date_rev DATE,
+                credit_limit TEXT,
+                credit_check TEXT,
+                sett_due_day INTEGER,
+                payment_due TEXT,
+                discount REAL,
+                deposit TEXT,
+                pay_due_day TEXT,
+                payment_method TEXT,
+                check_credit INTEGER,
+                term_agreed INTEGER,
+                account_on_hold INTEGER,
+                restrict_mailing INTEGER,
+                tax REAL,
+                subtotal REAL,
+                total REAL,
+                created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (customer_id) REFERENCES customers (customer_id)
+            )
+        ''')
+        
+        # Create products table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS products (
+                product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_type TEXT NOT NULL,
+                product_code TEXT UNIQUE,
+                cost_per_day REAL,
+                available_quantity INTEGER DEFAULT 1,
+                status TEXT DEFAULT 'Available'
+            )
+        ''')
+        
+        
+        
