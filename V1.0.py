@@ -139,7 +139,7 @@ class DatabaseManager:
         conn.close()
         return results
 class AdvancedRentalInventory:
-     def __init__(self, root):
+    def __init__(self, root):
         self.root = root
         self.root.title("Advanced Rental Inventory Management System")
         self.root.geometry("1600x900")
@@ -159,5 +159,16 @@ class AdvancedRentalInventory:
         
         # Create notebook (tabs)
         self.create_notebook()
+    
+    def configure_styles(self):
+        """Configure modern UI styles"""
+        style = ttk.Style()
+        style.theme_use('clam')
+        
+        # Configure custom styles
+        style.configure('Title.TLabel', font=('Arial', 24, 'bold'), background='#2c3e50', foreground='white')
+        style.configure('Heading.TLabel', font=('Arial', 16, 'bold'), background='#34495e', foreground='white')
+        style.configure('Modern.TFrame', background='#34495e', relief='raised', borderwidth=2)
+        style.configure('Card.TFrame', background='#ecf0f1', relief='raised', borderwidth=1)
     
         
