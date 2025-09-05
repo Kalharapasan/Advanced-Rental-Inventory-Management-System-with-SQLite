@@ -647,3 +647,35 @@ class AdvancedRentalInventory:
         elif values == "0":
             messagebox.showinfo("Zero Selected", "You chose zero")
             self.reset_form()
+            
+    def check_credit(self):
+        """Handle check credit checkbox"""
+        if self.var1.get() == 1:
+            self.txtInfo0.delete("1.0", END)
+            self.txtInfo0.insert(END, "Customer's Check Credit Approved")
+        else:
+            self.txtInfo0.delete("1.0", END)
+    
+    def term_agreed(self):
+        """Handle term agreed checkbox"""
+        if self.var2.get() == 1:
+            self.txtInfo1.delete("1.0", END)
+            self.txtInfo1.insert(END, "Term Agreed")
+        else:
+            self.txtInfo1.delete("1.0", END)
+    
+    def account_on_hold(self):
+        """Handle account on hold checkbox"""
+        if self.var3.get() == 1:
+            self.txtInfo2.delete("1.0", END)
+            self.txtInfo2.insert(END, "Customer's Account On Hold")
+        else:
+            self.txtInfo2.delete("1.0", END)
+    
+    def restricted_mails(self):
+        """Handle restricted mails checkbox"""
+        if self.var4.get() == 1:
+            self.txtInfo3.delete("1.0", END)
+            self.txtInfo3.insert(END, "Restricted Mails for Customer")
+        else:
+            self.txtInfo3.delete("1.0", END)
