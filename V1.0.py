@@ -772,5 +772,50 @@ class AdvancedRentalInventory:
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save rental: {str(e)}")
             
-            
+    def reset_form(self):
+        """Reset all form fields"""
+        # Clear text widgets
+        self.txtInfo0.delete("1.0", END)
+        self.txtInfo1.delete("1.0", END)
+        self.txtInfo2.delete("1.0", END)
+        self.txtInfo3.delete("1.0", END)
+        self.txtReceipt.delete("1.0", END)
+        
+        # Reset variables
+        self.AcctOpen.set("")
+        self.AppDate.set("")
+        self.NextCreditReview.set("")
+        self.LastCreditReview.set("")
+        self.DateRev.set("")
+        self.ProdCode.set("")
+        self.ProdType.set("")
+        self.NoDays.set("")
+        self.CostPDay.set("")
+        self.CreLimit.set("")
+        self.CreCheck.set("")
+        self.SettDueDay.set("")
+        self.PaymentD.set("")
+        self.Discount.set("")
+        self.Deposit.set("")
+        self.PayDueDay.set("")
+        self.PaymentM.set("")
+        self.var1.set(0)
+        self.var2.set(0)
+        self.var3.set(0)
+        self.var4.set(0)
+        self.Tax.set("")
+        self.SubTotal.set("")
+        self.Total.set("")
+        self.Receipt_Ref.set("")
+        
+        # Reset comboboxes
+        self.cboProdType.current(0)
+        self.cboNoDays.current(0)
+        self.cboAcctOpen.current(0)
+        self.cboCreLimit.current(0)
+        self.cboCreCheck.current(0)
+        self.cboPaymentD.current(0)
+        self.cboDiscount.current(0)
+        self.cboDeposit.current(0)
+        self.cboPaymentM.current(0)        
     
