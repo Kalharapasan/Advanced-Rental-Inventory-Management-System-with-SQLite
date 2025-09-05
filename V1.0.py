@@ -819,3 +819,24 @@ class AdvancedRentalInventory:
         self.cboDeposit.current(0)
         self.cboPaymentM.current(0)        
     
+     def exit_app(self):
+        """Exit application"""
+        if messagebox.askyesno("Exit", "Are you sure you want to exit?"):
+            self.root.destroy()
+    
+    # Database and analytics methods
+    def load_all_rentals(self):
+        """Load all rentals into history tree"""
+        for item in self.history_tree.get_children():
+            self.history_tree.delete(item)
+        
+        rentals = self.db_manager.get_all_rentals()
+        for rental in rentals:
+            self.history_tree.insert('', 'end', values=(
+                rental[0],  # rental_id
+                rental[2],  # receipt_ref
+                rental[3],  # product_type
+                rental[5],  # no_days
+                f"£{rental[25]:.2f}",  # total
+                rental[26]  # created_date
+            ))
