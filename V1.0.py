@@ -138,6 +138,35 @@ class DatabaseManager:
         results = cursor.fetchall()
         conn.close()
         return results
+    
+    def get_customers(self):
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        cursor.execute("SELECT customer_id, customer_name, phone, email, address FROM customers ORDER BY created_date DESC")
+        customers = cursor.fetchall()
+        conn.close()
+        return customers
+    
+    def add_customer(self, name, phone, email, address):
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO customers (customer_name, phone, email, address) VALUES (?, ?, ?, ?)", (name, phone, email, address))
+        conn.commit()
+        conn.close()
+    
+    def update_customer(self, customer_id, name, phone, email, address):
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        cursor.execute("UPDATE customers SET customer_name=?, phone=?, email=?, address=? WHERE customer_id=?", (name, phone, email, address, customer_id))
+        conn.commit()
+        conn.close()
+    
+    def delete_customer(self, customer_id):
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM customers WHERE customer_id=?", (customer_id,))
+        conn.commit()
+        conn.close()
 
 class AdvancedRentalInventory:
     def __init__(self, root):
@@ -528,37 +557,117 @@ class AdvancedRentalInventory:
         self.show_product_distribution()
     
     def setup_customer_tab(self):
-        """Setup customer management tab"""
-        customer_frame = Frame(self.customer_tab, bg='#2c3e50')
-        customer_frame.pack(fill=BOTH, expand=True, padx=10, pady=10)
-        
-        # Customer input frame
-        input_frame = ttk.LabelFrame(customer_frame, text="Customer Information", padding=10)
-        input_frame.pack(fill=X, pady=(0, 10))
-        
-        # Row 1
-        Label(input_frame, text="Customer Name:", font=('Arial', 12, 'bold')).grid(row=0, column=0, sticky=W, padx=5)
-        Entry(input_frame, textvariable=self.customer_name, font=('Arial', 12), width=25).grid(row=0, column=1, padx=5, pady=2)
-        
-        Label(input_frame, text="Phone:", font=('Arial', 12, 'bold')).grid(row=0, column=2, sticky=W, padx=5)
-        Entry(input_frame, textvariable=self.customer_phone, font=('Arial', 12), width=25).grid(row=0, column=3, padx=5, pady=2)
-        
-        # Row 2
-        Label(input_frame, text="Email:", font=('Arial', 12, 'bold')).grid(row=1, column=0, sticky=W, padx=5)
-        Entry(input_frame, textvariable=self.customer_email, font=('Arial', 12), width=25).grid(row=1, column=1, padx=5, pady=2)
-        
-        Label(input_frame, text="Address:", font=('Arial', 12, 'bold')).grid(row=1, column=2, sticky=W, padx=5)
-        Entry(input_frame, textvariable=self.customer_address, font=('Arial', 12), width=25).grid(row=1, column=3, padx=5, pady=2)
-        
-        # Buttons
-        button_frame = Frame(input_frame)
-        button_frame.grid(row=2, column=0, columnspan=4, pady=10)
-        
-        Button(button_frame, text="Add Customer", font=('Arial', 12), bg='#27ae60', fg='white',
-               command=self.add_customer).pack(side=LEFT, padx=5)
-        
-        Button(button_frame, text="Clear", font=('Arial', 12), bg='#f39c12', fg='white',
-               command=self.clear_customer_form).pack(side=LEFT, padx=5)
+        outer = ttk.LabelFrame(self.customer_tab, text="Customer Management", style="Card.TLabelframe", padding=10)
+        outer.pack(fill=BOTH, expand=True, padx=10, pady=10)
+
+        # form
+        form = Frame(outer)
+        form.pack(fill=X, pady=(0, 10))
+
+        ttk.Label(form, text="Name:").grid(row=0, column=0, sticky=E, padx=5, pady=4)
+        ttk.Entry(form, textvariable=self.customer_name, width=28).grid(row=0, column=1, padx=5, pady=4)
+
+        ttk.Label(form, text="Phone:").grid(row=0, column=2, sticky=E, padx=5, pady=4)
+        ttk.Entry(form, textvariable=self.customer_phone, width=28).grid(row=0, column=3, padx=5, pady=4)
+
+        ttk.Label(form, text="Email:").grid(row=1, column=0, sticky=E, padx=5, pady=4)
+        ttk.Entry(form, textvariable=self.customer_email, width=28).grid(row=1, column=1, padx=5, pady=4)
+
+        ttk.Label(form, text="Address:").grid(row=1, column=2, sticky=E, padx=5, pady=4)
+        ttk.Entry(form, textvariable=self.customer_address, width=28).grid(row=1, column=3, padx=5, pady=4)
+
+        btns = Frame(form)
+        btns.grid(row=2, column=0, columnspan=4, pady=6)
+        ttk.Button(btns, text="Add", command=self.add_customer).pack(side=LEFT, padx=5)
+        ttk.Button(btns, text="Update", command=self.update_customer).pack(side=LEFT, padx=5)
+        ttk.Button(btns, text="Delete", command=self.delete_customer).pack(side=LEFT, padx=5)
+        ttk.Button(btns, text="Clear", command=self.clear_customer_form).pack(side=LEFT, padx=5)
+
+        # table
+        cols = ("ID", "Name", "Phone", "Email", "Address")
+        self.customer_tree = ttk.Treeview(outer, columns=cols, show="headings")
+        for c in cols:
+            self.customer_tree.heading(c, text=c)
+        self.customer_tree.column("ID", width=60)
+        self.customer_tree.column("Name", width=180)
+        self.customer_tree.column("Phone", width=120)
+        self.customer_tree.column("Email", width=200)
+        self.customer_tree.column("Address", width=220)
+
+        vs = ttk.Scrollbar(outer, orient=VERTICAL, command=self.customer_tree.yview)
+        self.customer_tree.configure(yscrollcommand=vs.set)
+        self.customer_tree.pack(side=LEFT, fill=BOTH, expand=True)
+        vs.pack(side=RIGHT, fill=Y)
+
+        self.customer_tree.bind("<<TreeviewSelect>>", self.on_customer_select)
+
+        self.load_customers_table()
+    
+    def load_customers_table(self):
+        for i in self.customer_tree.get_children():
+            self.customer_tree.delete(i)
+        for row in self.db_manager.get_customers():
+            self.customer_tree.insert("", "end", values=row)
+    
+    def on_customer_select(self, _event=None):
+        sel = self.customer_tree.selection()
+        if not sel:
+            self.customer_id_edit = None
+            return
+        vals = self.customer_tree.item(sel[0], "values")
+        self.customer_id_edit = int(vals[0])
+        self.customer_name.set(vals[1])
+        self.customer_phone.set(vals[2])
+        self.customer_email.set(vals[3])
+        self.customer_address.set(vals[4])
+    
+    def clear_customer_form(self):
+        self.customer_id_edit = None
+        self.customer_name.set("")
+        self.customer_phone.set("")
+        self.customer_email.set("")
+        self.customer_address.set("")
+    
+    def add_customer(self):
+        name = self.customer_name.get().strip()
+        if not name:
+            messagebox.showerror("Error", "Customer name is required.")
+            return
+        self.db_manager.add_customer(
+            name,
+            self.customer_phone.get().strip(),
+            self.customer_email.get().strip(),
+            self.customer_address.get().strip(),
+        )
+        messagebox.showinfo("Success", "Customer added.")
+        self.clear_customer_form()
+        self.load_customers_table()
+    
+    def update_customer(self):
+        if not self.customer_id_edit:
+            messagebox.showerror("Error", "Select a customer to update.")
+            return
+        self.db_manager.update_customer(
+            self.customer_id_edit,
+            self.customer_name.get().strip(),
+            self.customer_phone.get().strip(),
+            self.customer_email.get().strip(),
+            self.customer_address.get().strip(),
+        )
+        messagebox.showinfo("Success", "Customer updated.")
+        self.clear_customer_form()
+        self.load_customers_table()
+    
+    def delete_customer(self):
+        if not self.customer_id_edit:
+            messagebox.showerror("Error", "Select a customer to delete.")
+            return
+        if not messagebox.askyesno("Confirm", "Delete this customer?"):
+            return
+        self.db_manager.delete_customer(self.customer_id_edit)
+        messagebox.showinfo("Success", "Customer deleted.")
+        self.clear_customer_form()
+        self.load_customers_table()
     
     # Event handlers and methods for original functionality
     def product_selected(self, event):
@@ -1134,6 +1243,152 @@ class AdvancedRentalInventory:
         self.customer_phone.set("")
         self.customer_email.set("")
         self.customer_address.set("")
+    
+    def update_customer(self):
+        if not hasattr(self, 'customer_id') or not self.customer_id:
+            messagebox.showerror("Error", "Select a customer first")
+            return
+        # Validate email
+        email = self.customer_email.get()
+        if email and ("@" not in email or "." not in email):
+            messagebox.showerror("Error", "Enter a valid email address")
+            return
+        # Validate phone (simple check: must be digits and at least 7 chars)
+        phone = self.customer_phone.get()
+        if phone and (not phone.isdigit() or len(phone) < 7):
+            messagebox.showerror("Error", "Enter a valid phone number")
+            return
+        # Check if any changes were made
+        conn = sqlite3.connect(self.db_manager.db_name)
+        cursor = conn.cursor()
+        cursor.execute("SELECT customer_name, phone, email, address FROM customers WHERE customer_id=?", (self.customer_id,))
+        old = cursor.fetchone()
+        new = (self.customer_name.get(), self.customer_phone.get(), self.customer_email.get(), self.customer_address.get())
+        if old == new:
+            conn.close()
+            messagebox.showinfo("Info", "No changes to update.")
+            return
+        cursor.execute("UPDATE customers SET customer_name=?, phone=?, email=?, address=? WHERE customer_id=?",
+                       (self.customer_name.get(), self.customer_phone.get(),
+                        self.customer_email.get(), self.customer_address.get(), self.customer_id))
+        conn.commit()
+        conn.close()
+        messagebox.showinfo("Success", "Customer updated")
+        self.clear_customer_form()
+        self.load_all_customers()
+    
+    def setup_customer_tab(self):
+        outer = ttk.LabelFrame(self.customer_tab, text="Customer Management", style="Card.TLabelframe", padding=10)
+        outer.pack(fill=BOTH, expand=True, padx=10, pady=10)
+
+        # form
+        form = Frame(outer)
+        form.pack(fill=X, pady=(0, 10))
+
+        ttk.Label(form, text="Name:").grid(row=0, column=0, sticky=E, padx=5, pady=4)
+        ttk.Entry(form, textvariable=self.customer_name, width=28).grid(row=0, column=1, padx=5, pady=4)
+
+        ttk.Label(form, text="Phone:").grid(row=0, column=2, sticky=E, padx=5, pady=4)
+        ttk.Entry(form, textvariable=self.customer_phone, width=28).grid(row=0, column=3, padx=5, pady=4)
+
+        ttk.Label(form, text="Email:").grid(row=1, column=0, sticky=E, padx=5, pady=4)
+        ttk.Entry(form, textvariable=self.customer_email, width=28).grid(row=1, column=1, padx=5, pady=4)
+
+        ttk.Label(form, text="Address:").grid(row=1, column=2, sticky=E, padx=5, pady=4)
+        ttk.Entry(form, textvariable=self.customer_address, width=28).grid(row=1, column=3, padx=5, pady=4)
+
+        btns = Frame(form)
+        btns.grid(row=2, column=0, columnspan=4, pady=6)
+        ttk.Button(btns, text="Add", command=self.add_customer).pack(side=LEFT, padx=5)
+        ttk.Button(btns, text="Update", command=self.update_customer).pack(side=LEFT, padx=5)
+        ttk.Button(btns, text="Delete", command=self.delete_customer).pack(side=LEFT, padx=5)
+        ttk.Button(btns, text="Clear", command=self.clear_customer_form).pack(side=LEFT, padx=5)
+
+        # table
+        cols = ("ID", "Name", "Phone", "Email", "Address")
+        self.customer_tree = ttk.Treeview(outer, columns=cols, show="headings")
+        for c in cols:
+            self.customer_tree.heading(c, text=c)
+        self.customer_tree.column("ID", width=60)
+        self.customer_tree.column("Name", width=180)
+        self.customer_tree.column("Phone", width=120)
+        self.customer_tree.column("Email", width=200)
+        self.customer_tree.column("Address", width=220)
+
+        vs = ttk.Scrollbar(outer, orient=VERTICAL, command=self.customer_tree.yview)
+        self.customer_tree.configure(yscrollcommand=vs.set)
+        self.customer_tree.pack(side=LEFT, fill=BOTH, expand=True)
+        vs.pack(side=RIGHT, fill=Y)
+
+        self.customer_tree.bind("<<TreeviewSelect>>", self.on_customer_select)
+
+        self.load_customers_table()
+
+    def load_customers_table(self):
+        for i in self.customer_tree.get_children():
+            self.customer_tree.delete(i)
+        for row in self.db_manager.get_customers():
+            self.customer_tree.insert("", "end", values=row)
+
+    def on_customer_select(self, _event=None):
+        sel = self.customer_tree.selection()
+        if not sel:
+            self.customer_id_edit = None
+            return
+        vals = self.customer_tree.item(sel[0], "values")
+        self.customer_id_edit = int(vals[0])
+        self.customer_name.set(vals[1])
+        self.customer_phone.set(vals[2])
+        self.customer_email.set(vals[3])
+        self.customer_address.set(vals[4])
+
+    def clear_customer_form(self):
+        self.customer_id_edit = None
+        self.customer_name.set("")
+        self.customer_phone.set("")
+        self.customer_email.set("")
+        self.customer_address.set("")
+
+    def add_customer(self):
+        name = self.customer_name.get().strip()
+        if not name:
+            messagebox.showerror("Error", "Customer name is required.")
+            return
+        self.db_manager.add_customer(
+            name,
+            self.customer_phone.get().strip(),
+            self.customer_email.get().strip(),
+            self.customer_address.get().strip(),
+        )
+        messagebox.showinfo("Success", "Customer added.")
+        self.clear_customer_form()
+        self.load_customers_table()
+
+    def update_customer(self):
+        if not self.customer_id_edit:
+            messagebox.showerror("Error", "Select a customer to update.")
+            return
+        self.db_manager.update_customer(
+            self.customer_id_edit,
+            self.customer_name.get().strip(),
+            self.customer_phone.get().strip(),
+            self.customer_email.get().strip(),
+            self.customer_address.get().strip(),
+        )
+        messagebox.showinfo("Success", "Customer updated.")
+        self.clear_customer_form()
+        self.load_customers_table()
+
+    def delete_customer(self):
+        if not self.customer_id_edit:
+            messagebox.showerror("Error", "Select a customer to delete.")
+            return
+        if not messagebox.askyesno("Confirm", "Delete this customer?"):
+            return
+        self.db_manager.delete_customer(self.customer_id_edit)
+        messagebox.showinfo("Success", "Customer deleted.")
+        self.clear_customer_form()
+        self.load_customers_table()
 
 if __name__ == '__main__':
     root = tk.Tk()
