@@ -205,4 +205,26 @@ class AdvancedRentalInventory:
         self.customer_phone = StringVar()
         self.customer_email = StringVar()
         self.customer_address = StringVar()
+    
+    def create_notebook(self):
+        """Create tabbed interface"""
+        self.notebook = ttk.Notebook(self.root)
+        self.notebook.pack(fill=BOTH, expand=True, padx=10, pady=5)
+        
+        # Create tabs
+        self.rental_tab = ttk.Frame(self.notebook)
+        self.history_tab = ttk.Frame(self.notebook)
+        self.analytics_tab = ttk.Frame(self.notebook)
+        self.customer_tab = ttk.Frame(self.notebook)
+        
+        self.notebook.add(self.rental_tab, text="New Rental")
+        self.notebook.add(self.history_tab, text="Rental History")
+        self.notebook.add(self.analytics_tab, text="Analytics")
+        self.notebook.add(self.customer_tab, text="Customer Management")
+        
+        # Setup each tab
+        self.setup_rental_tab()
+        self.setup_history_tab()
+        self.setup_analytics_tab()
+        self.setup_customer_tab()
         
