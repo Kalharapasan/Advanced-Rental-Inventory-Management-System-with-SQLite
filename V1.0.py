@@ -1033,6 +1033,7 @@ class AdvancedRentalInventory:
         except Exception as e:
             messagebox.showerror("Error", f"Failed to export PDF: {str(e)}")
     
+    
     def show_product_distribution(self):
         """Show product distribution chart"""
         try:
