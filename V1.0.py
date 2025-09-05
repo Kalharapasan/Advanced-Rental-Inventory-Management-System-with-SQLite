@@ -547,3 +547,51 @@ class AdvancedRentalInventory:
         
         Button(button_frame, text="Clear", font=('Arial', 12), bg='#f39c12', fg='white',
                command=self.clear_customer_form).pack(side=LEFT, padx=5)
+    
+    # Event handlers and methods for original functionality
+    def product_selected(self, event):
+        """Handle product type selection"""
+        values = str(self.cboProdType.get())
+        if values == "Car":
+            self.ProdCode.set("CAR452")
+            self.CostPDay.set("£12")
+            self.CreCheck.set("No")
+            self.SettDueDay.set("12")
+            self.PaymentD.set("No")
+            self.Deposit.set("No")
+            self.PaymentM.set("Cash")
+        elif values == "Van":
+            self.ProdCode.set("VAN775")
+            self.CostPDay.set("£19")
+            self.CreCheck.set("No")
+            self.SettDueDay.set("19")
+            self.PaymentD.set("No")
+            self.Deposit.set("No")
+            self.PaymentM.set("Cash")
+        elif values == "Minibus":
+            self.ProdCode.set("MIN334")
+            self.CostPDay.set("£12")
+            self.CreCheck.set("No")
+            self.SettDueDay.set("12")
+            self.PaymentD.set("No")
+            self.Deposit.set("No")
+            self.PaymentM.set("Cash")
+        elif values == "Truck":
+            self.ProdCode.set("TRK7483")
+            self.CostPDay.set("£15")
+            self.CreCheck.set("No")
+            self.SettDueDay.set("15")
+            self.PaymentD.set("No")
+            self.Deposit.set("No")
+            self.PaymentM.set("Cash")
+        
+        # Calculate price if days are selected
+        if self.LastCreditReview.get() and self.SettDueDay.get():
+            try:
+                n = float(self.LastCreditReview.get())
+                s = float(self.SettDueDay.get())
+                price = n * s
+                TC = "£" + str('%.2f' % price)
+                self.PayDueDay.set(TC)
+            except ValueError:
+                pass
