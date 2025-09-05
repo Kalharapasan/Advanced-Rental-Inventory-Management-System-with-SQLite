@@ -138,5 +138,6 @@ class DatabaseManager:
         results = cursor.fetchall()
         conn.close()
         return results
-        
+class AdvancedRentalInventory:
+    
         
