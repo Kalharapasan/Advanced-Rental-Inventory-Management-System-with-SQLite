@@ -488,4 +488,29 @@ class AdvancedRentalInventory:
         
         # Load initial data
         self.load_all_rentals()
+    
+    def setup_analytics_tab(self):
+        """Setup analytics tab with charts"""
+        analytics_frame = Frame(self.analytics_tab, bg='#2c3e50')
+        analytics_frame.pack(fill=BOTH, expand=True, padx=10, pady=10)
         
+        # Create matplotlib figure
+        self.fig = Figure(figsize=(12, 8), facecolor='#2c3e50')
+        self.canvas = FigureCanvasTkAgg(self.fig, analytics_frame)
+        self.canvas.get_tk_widget().pack(fill=BOTH, expand=True)
+        
+        # Button frame for analytics
+        button_frame = Frame(analytics_frame, bg='#2c3e50')
+        button_frame.pack(fill=X, pady=10)
+        
+        Button(button_frame, text="Product Distribution", font=('Arial', 12), bg='#3498db', fg='white',
+               command=self.show_product_distribution).pack(side=LEFT, padx=5)
+        
+        Button(button_frame, text="Monthly Revenue", font=('Arial', 12), bg='#27ae60', fg='white',
+               command=self.show_monthly_revenue).pack(side=LEFT, padx=5)
+        
+        Button(button_frame, text="Customer Statistics", font=('Arial', 12), bg='#f39c12', fg='white',
+               command=self.show_customer_stats).pack(side=LEFT, padx=5)
+        
+        # Initialize with product distribution chart
+        self.show_product_distribution()
