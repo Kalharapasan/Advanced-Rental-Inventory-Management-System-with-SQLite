@@ -170,5 +170,39 @@ class AdvancedRentalInventory:
         style.configure('Heading.TLabel', font=('Arial', 16, 'bold'), background='#34495e', foreground='white')
         style.configure('Modern.TFrame', background='#34495e', relief='raised', borderwidth=2)
         style.configure('Card.TFrame', background='#ecf0f1', relief='raised', borderwidth=1)
-    
+        
+    def init_variables(self):
+        """Initialize all tkinter variables"""
+        self.AcctOpen = StringVar()
+        self.AppDate = StringVar()
+        self.NextCreditReview = StringVar()
+        self.LastCreditReview = StringVar()
+        self.DateRev = StringVar()
+        self.ProdCode = StringVar()
+        self.ProdType = StringVar()
+        self.NoDays = StringVar()
+        self.CostPDay = StringVar()
+        self.CreLimit = StringVar()
+        self.CreCheck = StringVar()
+        self.SettDueDay = StringVar()
+        self.PaymentD = StringVar()
+        self.Discount = StringVar()
+        self.Deposit = StringVar()
+        self.PayDueDay = StringVar()
+        self.PaymentM = StringVar()
+        
+        self.var1 = IntVar()
+        self.var2 = IntVar()
+        self.var3 = IntVar()
+        self.var4 = IntVar()
+        self.Tax = StringVar()
+        self.SubTotal = StringVar()
+        self.Total = StringVar()
+        self.Receipt_Ref = StringVar()
+        
+        # New variables for customer management
+        self.customer_name = StringVar()
+        self.customer_phone = StringVar()
+        self.customer_email = StringVar()
+        self.customer_address = StringVar()
         
