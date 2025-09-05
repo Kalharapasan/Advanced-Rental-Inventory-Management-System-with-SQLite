@@ -139,15 +139,14 @@ Add a license of your choice (e.g., MIT/Apache‑2.0).
 
 ## 📷 Screenshots (Optional)
 
-```
 <img width="1366" height="768" alt="Screenshot (163)" src="https://github.com/user-attachments/assets/136ae047-2408-4100-a793-2650171b3284" />
 <img width="1366" height="768" alt="Screenshot (162)" src="https://github.com/user-attachments/assets/3204245b-247f-49f6-b498-20e7ee6bbe00" />
 
-```
 
 ---
 
 ## 🤝 Contributing
 
 PRs are welcome — follow PEP8, use small commits, and write descriptive messages.
+
 
