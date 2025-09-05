@@ -861,4 +861,52 @@ class AdvancedRentalInventory:
                 f"£{rental[25]:.2f}",  # total
                 rental[26]  # created_date
             ))        
-    
+    def export_to_pdf(self):
+        """Export rental history to PDF"""
+        try:
+            filename = filedialog.asksaveasfilename(
+                defaultextension=".pdf",
+                filetypes=[("PDF files", "*.pdf")],
+                title="Save Rental History"
+            )
+            
+            if filename:
+                c = canvas.Canvas(filename, pagesize=letter)
+                width, height = letter
+                
+                # Title
+                c.setFont("Helvetica-Bold", 16)
+                c.drawString(50, height - 50, "Rental History Report")
+                c.drawString(50, height - 70, f"Generated on: {datetime.date.today()}")
+                
+                # Headers
+                c.setFont("Helvetica-Bold", 12)
+                y_position = height - 120
+                c.drawString(50, y_position, "Receipt Ref")
+                c.drawString(150, y_position, "Product")
+                c.drawString(250, y_position, "Days")
+                c.drawString(350, y_position, "Total")
+                c.drawString(450, y_position, "Date")
+                
+                # Data
+                c.setFont("Helvetica", 10)
+                rentals = self.db_manager.get_all_rentals()
+                y_position -= 20
+                
+                for rental in rentals:
+                    if y_position < 50:  # Start new page
+                        c.showPage()
+                        y_position = height - 50
+                    
+                    c.drawString(50, y_position, str(rental[2]))  # receipt_ref
+                    c.drawString(150, y_position, str(rental[3]))  # product_type
+                    c.drawString(250, y_position, str(rental[5]))  # no_days
+                    c.drawString(350, y_position, f"£{rental[25]:.2f}")  # total
+                    c.drawString(450, y_position, str(rental[26])[:10])  # date
+                    y_position -= 15
+                
+                c.save()
+                messagebox.showinfo("Success", f"Report exported to {filename}")
+        
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to export PDF: {str(e)}")
