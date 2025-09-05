@@ -595,3 +595,55 @@ class AdvancedRentalInventory:
                 self.PayDueDay.set(TC)
             except ValueError:
                 pass
+    
+    def days_selected(self, event):
+        """Handle number of days selection"""
+        values = str(self.cboNoDays.get())
+        
+        if values == "1-30":
+            d1 = datetime.date.today()
+            d2 = datetime.timedelta(days=30)
+            d3 = d1 + d2
+            self.AppDate.set(str(d1))
+            self.NextCreditReview.set(str(d3))
+            self.LastCreditReview.set("30")
+            self.DateRev.set(str(d3))
+            self.CreLimit.set("£150")
+            self.Discount.set("5%")
+            self.AcctOpen.set("Yes")
+        elif values == "31-90":
+            d1 = datetime.date.today()
+            d2 = datetime.timedelta(days=90)
+            d3 = d1 + d2
+            self.AppDate.set(str(d1))
+            self.NextCreditReview.set(str(d3))
+            self.LastCreditReview.set("90")
+            self.DateRev.set(str(d3))
+            self.CreLimit.set("£200")
+            self.Discount.set("10%")
+            self.AcctOpen.set("Yes")
+        elif values == "91-270":
+            d1 = datetime.date.today()
+            d2 = datetime.timedelta(days=270)
+            d3 = d1 + d2
+            self.AppDate.set(str(d1))
+            self.NextCreditReview.set(str(d3))
+            self.LastCreditReview.set("270")
+            self.DateRev.set(str(d3))
+            self.CreLimit.set("£250")
+            self.Discount.set("15%")
+            self.AcctOpen.set("Yes")
+        elif values == "271-365":
+            d1 = datetime.date.today()
+            d2 = datetime.timedelta(days=365)
+            d3 = d1 + d2
+            self.AppDate.set(str(d1))
+            self.NextCreditReview.set(str(d3))
+            self.LastCreditReview.set("365")
+            self.DateRev.set(str(d3))
+            self.CreLimit.set("£300")
+            self.Discount.set("20%")
+            self.AcctOpen.set("Yes")
+        elif values == "0":
+            messagebox.showinfo("Zero Selected", "You chose zero")
+            self.reset_form()
