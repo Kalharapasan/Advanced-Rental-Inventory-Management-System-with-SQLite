@@ -1029,6 +1029,65 @@ class AdvancedRentalInventory:
         except Exception as e:
             messagebox.showerror("Error", f"Failed to generate chart: {str(e)}")
     
+    def show_customer_stats(self):
+        """Show customer statistics"""
+        try:
+            self.fig.clear()
+            
+            conn = sqlite3.connect(self.db_manager.db_name)
+            cursor = conn.cursor()
+            
+            # Get statistics
+            cursor.execute('SELECT COUNT(*) FROM rentals')
+            total_rentals = cursor.fetchone()[0]
+            
+            cursor.execute('SELECT SUM(total) FROM rentals')
+            total_revenue = cursor.fetchone()[0] or 0
+            
+            cursor.execute('SELECT AVG(total) FROM rentals')
+            avg_rental = cursor.fetchone()[0] or 0
+            
+            # Payment method distribution
+            cursor.execute('''
+                SELECT payment_method, COUNT(*) as count
+                FROM rentals 
+                WHERE payment_method != 'Select'
+                GROUP BY payment_method
+            ''')
+            payment_data = cursor.fetchall()
+            
+            conn.close()
+            
+            # Create text summary
+            ax = self.fig.add_subplot(111)
+            ax.axis('off')
+            
+            stats_text = f"""
+            CUSTOMER STATISTICS SUMMARY
+            
+            Total Rentals: {total_rentals}
+            Total Revenue: £{total_revenue:.2f}
+            Average Rental Value: £{avg_rental:.2f}
+            
+            PAYMENT METHOD DISTRIBUTION:
+            """
+            
+            if payment_data:
+                for method, count in payment_data:
+                    percentage = (count / total_rentals) * 100 if total_rentals > 0 else 0
+                    stats_text += f"\n{method}: {count} ({percentage:.1f}%)"
+            
+            ax.text(0.1, 0.9, stats_text, transform=ax.transAxes, 
+                   fontsize=14, verticalalignment='top', color='white',
+                   bbox=dict(boxstyle="round,pad=0.5", facecolor='#34495e', alpha=0.8))
+            
+            # Style the figure
+            self.fig.patch.set_facecolor('#2c3e50')
+            self.canvas.draw()
+            
+        except Exception as e:
+             messagebox.showerror("Error", f"Failed to generate statistics: {str(e)}")
+    
         
         
     
