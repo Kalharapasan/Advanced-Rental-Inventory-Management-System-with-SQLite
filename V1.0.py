@@ -390,3 +390,50 @@ class AdvancedRentalInventory:
         self.btnExit = Button(button_frame, text="Exit", font=('Arial', 14, 'bold'), 
                              bg='#e74c3c', fg='white', padx=20, pady=10, command=self.exit_app)
         self.btnExit.pack(side=RIGHT, padx=5)
+        
+    def setup_right_frame(self, parent):
+        """Setup right frame with account info and receipt"""
+        # Account Info Frame
+        account_frame = ttk.LabelFrame(parent, text="Account Information", padding=10)
+        account_frame.pack(fill=X, padx=10, pady=5)
+        
+        Label(account_frame, text="Account Opened:", font=('Arial', 12, 'bold')).grid(row=0, column=0, sticky=W, padx=5)
+        self.cboAcctOpen = ttk.Combobox(account_frame, textvariable=self.AcctOpen, state='readonly',
+                                       font=('Arial', 12), width=20)
+        self.cboAcctOpen['values'] = ('Select an option', 'Yes', 'No')
+        self.cboAcctOpen.current(0)
+        self.cboAcctOpen.grid(row=0, column=1, padx=5, pady=2)
+        
+        Label(account_frame, text="Next Credit Review:", font=('Arial', 12, 'bold')).grid(row=1, column=0, sticky=W, padx=5)
+        Entry(account_frame, textvariable=self.NextCreditReview, font=('Arial', 12), width=23, state='readonly').grid(row=1, column=1, padx=5, pady=2)
+        
+        Label(account_frame, text="Last Credit Review:", font=('Arial', 12, 'bold')).grid(row=2, column=0, sticky=W, padx=5)
+        Entry(account_frame, textvariable=self.LastCreditReview, font=('Arial', 12), width=23, state='readonly').grid(row=2, column=1, padx=5, pady=2)
+        
+        Label(account_frame, text="Date Review:", font=('Arial', 12, 'bold')).grid(row=3, column=0, sticky=W, padx=5)
+        Entry(account_frame, textvariable=self.DateRev, font=('Arial', 12), width=23, state='readonly').grid(row=3, column=1, padx=5, pady=2)
+        
+        # Receipt Frame
+        receipt_frame = ttk.LabelFrame(parent, text="Receipt", padding=10)
+        receipt_frame.pack(fill=BOTH, expand=True, padx=10, pady=5)
+        
+        self.txtReceipt = Text(receipt_frame, font=('Arial', 10), wrap=WORD)
+        receipt_scroll = Scrollbar(receipt_frame, orient=VERTICAL, command=self.txtReceipt.yview)
+        self.txtReceipt.configure(yscrollcommand=receipt_scroll.set)
+        
+        self.txtReceipt.pack(side=LEFT, fill=BOTH, expand=True)
+        receipt_scroll.pack(side=RIGHT, fill=Y)
+        
+        # Total Frame
+        total_frame = ttk.LabelFrame(parent, text="Billing Summary", padding=10)
+        total_frame.pack(fill=X, padx=10, pady=5)
+        
+        Label(total_frame, text="Tax:", font=('Arial', 12, 'bold')).grid(row=0, column=0, sticky=W, padx=5)
+        Entry(total_frame, textvariable=self.Tax, font=('Arial', 12), width=25, state='readonly').grid(row=0, column=1, padx=5, pady=2)
+        
+        Label(total_frame, text="Subtotal:", font=('Arial', 12, 'bold')).grid(row=1, column=0, sticky=W, padx=5)
+        Entry(total_frame, textvariable=self.SubTotal, font=('Arial', 12), width=25, state='readonly').grid(row=1, column=1, padx=5, pady=2)
+        
+        Label(total_frame, text="Total:", font=('Arial', 12, 'bold')).grid(row=2, column=0, sticky=W, padx=5)
+        Entry(total_frame, textvariable=self.Total, font=('Arial', 12), width=25, state='readonly').grid(row=2, column=1, padx=5, pady=2)
+    
