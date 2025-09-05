@@ -1115,6 +1115,12 @@ class AdvancedRentalInventory:
         except Exception as e:
             messagebox.showerror("Error", f"Failed to add customer: {str(e)}")
     
+    def clear_customer_form(self):
+        """Clear customer form"""
+        self.customer_name.set("")
+        self.customer_phone.set("")
+        self.customer_email.set("")
+        self.customer_address.set("")
         
         
     
