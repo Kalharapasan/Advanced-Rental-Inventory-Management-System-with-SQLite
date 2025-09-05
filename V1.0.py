@@ -1,6 +1,5 @@
-from tkinter import *
-import sqlite3
 import tkinter as tk
+from tkinter import *
 from tkinter import ttk, messagebox, filedialog
 import sqlite3
 import random
@@ -14,12 +13,11 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import os
 
-
 class DatabaseManager:
     def __init__(self, db_name="rental_inventory.db"):
         self.db_name = db_name
         self.init_database()
-        
+    
     def init_database(self):
         """Initialize the database and create tables"""
         conn = sqlite3.connect(self.db_name)
@@ -36,6 +34,7 @@ class DatabaseManager:
                 created_date DATE DEFAULT CURRENT_DATE
             )
         ''')
+        
         # Create rentals table
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS rentals (
@@ -82,6 +81,7 @@ class DatabaseManager:
                 status TEXT DEFAULT 'Available'
             )
         ''')
+        
         # Insert default products if they don't exist
         default_products = [
             ('Car', 'CAR452', 12.00, 5),
@@ -98,7 +98,7 @@ class DatabaseManager:
         
         conn.commit()
         conn.close()
-        
+    
     def save_rental(self, rental_data):
         """Save rental data to database"""
         conn = sqlite3.connect(self.db_name)
@@ -138,6 +138,7 @@ class DatabaseManager:
         results = cursor.fetchall()
         conn.close()
         return results
+
 class AdvancedRentalInventory:
     def __init__(self, root):
         self.root = root
@@ -170,7 +171,7 @@ class AdvancedRentalInventory:
         style.configure('Heading.TLabel', font=('Arial', 16, 'bold'), background='#34495e', foreground='white')
         style.configure('Modern.TFrame', background='#34495e', relief='raised', borderwidth=2)
         style.configure('Card.TFrame', background='#ecf0f1', relief='raised', borderwidth=1)
-        
+    
     def init_variables(self):
         """Initialize all tkinter variables"""
         self.AcctOpen = StringVar()
@@ -205,6 +206,17 @@ class AdvancedRentalInventory:
         self.customer_phone = StringVar()
         self.customer_email = StringVar()
         self.customer_address = StringVar()
+    
+    def create_main_interface(self):
+        """Create the main interface layout"""
+        # Main title
+        title_frame = Frame(self.root, bg='#2c3e50', height=60)
+        title_frame.pack(fill=X, padx=10, pady=5)
+        title_frame.pack_propagate(False)
+        
+        title_label = Label(title_frame, text="Advanced Rental Inventory Management System", 
+                           font=('Arial', 24, 'bold'), bg='#2c3e50', fg='white')
+        title_label.pack(expand=True)
     
     def create_notebook(self):
         """Create tabbed interface"""
@@ -390,7 +402,7 @@ class AdvancedRentalInventory:
         self.btnExit = Button(button_frame, text="Exit", font=('Arial', 14, 'bold'), 
                              bg='#e74c3c', fg='white', padx=20, pady=10, command=self.exit_app)
         self.btnExit.pack(side=RIGHT, padx=5)
-        
+    
     def setup_right_frame(self, parent):
         """Setup right frame with account info and receipt"""
         # Account Info Frame
@@ -647,7 +659,7 @@ class AdvancedRentalInventory:
         elif values == "0":
             messagebox.showinfo("Zero Selected", "You chose zero")
             self.reset_form()
-            
+    
     def check_credit(self):
         """Handle check credit checkbox"""
         if self.var1.get() == 1:
@@ -771,7 +783,7 @@ class AdvancedRentalInventory:
             
         except Exception as e:
             messagebox.showerror("Error", f"Failed to save rental: {str(e)}")
-            
+    
     def reset_form(self):
         """Reset all form fields"""
         # Clear text widgets
@@ -817,7 +829,7 @@ class AdvancedRentalInventory:
         self.cboPaymentD.current(0)
         self.cboDiscount.current(0)
         self.cboDeposit.current(0)
-        self.cboPaymentM.current(0)        
+        self.cboPaymentM.current(0)
     
     def exit_app(self):
         """Exit application"""
@@ -840,7 +852,7 @@ class AdvancedRentalInventory:
                 f"£{rental[25]:.2f}",  # total
                 rental[26]  # created_date
             ))
-            
+    
     def search_rentals(self):
         """Search rentals"""
         search_term = self.search_var.get()
@@ -860,7 +872,8 @@ class AdvancedRentalInventory:
                 rental[5],  # no_days
                 f"£{rental[25]:.2f}",  # total
                 rental[26]  # created_date
-            ))        
+            ))
+    
     def export_to_pdf(self):
         """Export rental history to PDF"""
         try:
@@ -1086,7 +1099,7 @@ class AdvancedRentalInventory:
             self.canvas.draw()
             
         except Exception as e:
-             messagebox.showerror("Error", f"Failed to generate statistics: {str(e)}")
+            messagebox.showerror("Error", f"Failed to generate statistics: {str(e)}")
     
     def add_customer(self):
         """Add new customer"""
@@ -1121,10 +1134,8 @@ class AdvancedRentalInventory:
         self.customer_phone.set("")
         self.customer_email.set("")
         self.customer_address.set("")
-        
+
 if __name__ == '__main__':
     root = tk.Tk()
     app = AdvancedRentalInventory(root)
-    root.mainloop()      
-    
-    
+    root.mainloop()
