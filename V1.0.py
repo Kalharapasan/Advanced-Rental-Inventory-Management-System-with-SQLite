@@ -1088,6 +1088,33 @@ class AdvancedRentalInventory:
         except Exception as e:
              messagebox.showerror("Error", f"Failed to generate statistics: {str(e)}")
     
+    def add_customer(self):
+        """Add new customer"""
+        try:
+            if not self.customer_name.get():
+                messagebox.showerror("Error", "Customer name is required")
+                return
+            
+            conn = sqlite3.connect(self.db_manager.db_name)
+            cursor = conn.cursor()
+            cursor.execute('''
+                INSERT INTO customers (customer_name, phone, email, address)
+                VALUES (?, ?, ?, ?)
+            ''', (
+                self.customer_name.get(),
+                self.customer_phone.get(),
+                self.customer_email.get(),
+                self.customer_address.get()
+            ))
+            conn.commit()
+            conn.close()
+            
+            messagebox.showinfo("Success", "Customer added successfully!")
+            self.clear_customer_form()
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to add customer: {str(e)}")
+    
         
         
     
