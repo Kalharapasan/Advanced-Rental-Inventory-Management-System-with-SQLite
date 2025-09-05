@@ -910,3 +910,78 @@ class AdvancedRentalInventory:
         
         except Exception as e:
             messagebox.showerror("Error", f"Failed to export PDF: {str(e)}")
+    
+    def show_product_distribution(self):
+        """Show product distribution chart"""
+        try:
+            self.fig.clear()
+            
+            conn = sqlite3.connect(self.db_manager.db_name)
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT product_type, COUNT(*) as count, SUM(total) as revenue
+                FROM rentals 
+                GROUP BY product_type
+            ''')
+            data = cursor.fetchall()
+            conn.close()
+            
+            if data:
+                products = [row[0] for row in data]
+                counts = [row[1] for row in data]
+                revenues = [row[2] for row in data]
+                
+                # Create subplots
+                ax1 = self.fig.add_subplot(221)
+                ax2 = self.fig.add_subplot(222)
+                ax3 = self.fig.add_subplot(212)
+                
+                # Pie chart for distribution
+                ax1.pie(counts, labels=products, autopct='%1.1f%%', startangle=90)
+                ax1.set_title('Product Distribution by Count', color='white')
+                
+                # Bar chart for revenue
+                ax2.bar(products, revenues, color=['#3498db', '#e74c3c', '#27ae60', '#f39c12'])
+                ax2.set_title('Revenue by Product Type', color='white')
+                ax2.set_ylabel('Revenue (£)', color='white')
+                
+                # Line chart for trend (last 30 days)
+                cursor = conn = sqlite3.connect(self.db_manager.db_name)
+                cursor = conn.cursor()
+                cursor.execute('''
+                    SELECT DATE(created_date) as date, COUNT(*) as count
+                    FROM rentals 
+                    WHERE created_date >= date('now', '-30 days')
+                    GROUP BY DATE(created_date)
+                    ORDER BY date
+                ''')
+                trend_data = cursor.fetchall()
+                conn.close()
+                
+                if trend_data:
+                    dates = [row[0] for row in trend_data]
+                    daily_counts = [row[1] for row in trend_data]
+                    ax3.plot(dates, daily_counts, marker='o', color='#3498db')
+                    ax3.set_title('Daily Rentals (Last 30 Days)', color='white')
+                    ax3.set_ylabel('Number of Rentals', color='white')
+                    ax3.tick_params(axis='x', rotation=45)
+            
+            # Style the figure
+            self.fig.patch.set_facecolor('#2c3e50')
+            for ax in self.fig.get_axes():
+                ax.set_facecolor('#34495e')
+                ax.tick_params(colors='white')
+                ax.xaxis.label.set_color('white')
+                ax.yaxis.label.set_color('white')
+            
+            self.fig.tight_layout()
+            self.canvas.draw()
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to generate chart: {str(e)}")
+    
+    
+        
+        
+    
+    
