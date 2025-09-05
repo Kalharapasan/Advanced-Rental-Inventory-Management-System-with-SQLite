@@ -125,5 +125,18 @@ class DatabaseManager:
         results = cursor.fetchall()
         conn.close()
         return results
+    
+    def search_rentals(self, search_term):
+        """Search rentals by receipt reference or product type"""
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT * FROM rentals 
+            WHERE receipt_ref LIKE ? OR product_type LIKE ?
+            ORDER BY created_date DESC
+        ''', (f'%{search_term}%', f'%{search_term}%'))
+        results = cursor.fetchall()
+        conn.close()
+        return results
         
         
