@@ -139,5 +139,25 @@ class DatabaseManager:
         conn.close()
         return results
 class AdvancedRentalInventory:
+     def __init__(self, root):
+        self.root = root
+        self.root.title("Advanced Rental Inventory Management System")
+        self.root.geometry("1600x900")
+        self.root.configure(background='#2c3e50')
+        
+        # Initialize database
+        self.db_manager = DatabaseManager()
+        
+        # Configure style
+        self.configure_styles()
+        
+        # Initialize variables
+        self.init_variables()
+        
+        # Create main interface
+        self.create_main_interface()
+        
+        # Create notebook (tabs)
+        self.create_notebook()
     
         
