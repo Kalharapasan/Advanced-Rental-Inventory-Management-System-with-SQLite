@@ -245,3 +245,148 @@ class AdvancedRentalInventory:
         self.setup_left_frame(left_frame)
         self.setup_right_frame(right_frame)
     
+    def setup_left_frame(self, parent):
+        """Setup left frame with product selection and details"""
+        # Product Selection Frame
+        product_frame = ttk.LabelFrame(parent, text="Product Selection", padding=10)
+        product_frame.pack(fill=X, padx=10, pady=5)
+        
+        # Row 1: Product Type and Days
+        Label(product_frame, text="Product Type:", font=('Arial', 12, 'bold')).grid(row=0, column=0, sticky=W, padx=5)
+        self.cboProdType = ttk.Combobox(product_frame, textvariable=self.ProdType, state='readonly', 
+                                       font=('Arial', 12), width=15)
+        self.cboProdType.bind("<<ComboboxSelected>>", self.product_selected)
+        self.cboProdType['values'] = ('Select', 'Car', 'Van', 'Minibus', 'Truck')
+        self.cboProdType.current(0)
+        self.cboProdType.grid(row=0, column=1, padx=5, pady=2)
+        
+        Label(product_frame, text="No of Days:", font=('Arial', 12, 'bold')).grid(row=0, column=2, sticky=W, padx=5)
+        self.cboNoDays = ttk.Combobox(product_frame, textvariable=self.NoDays, state='readonly',
+                                     font=('Arial', 12), width=15)
+        self.cboNoDays.bind("<<ComboboxSelected>>", self.days_selected)
+        self.cboNoDays['values'] = ('Select', '0', '1-30', '31-90', '91-270', '271-365')
+        self.cboNoDays.current(0)
+        self.cboNoDays.grid(row=0, column=3, padx=5, pady=2)
+        
+        # Row 2: Product Code and Cost
+        Label(product_frame, text="Product Code:", font=('Arial', 12, 'bold')).grid(row=1, column=0, sticky=W, padx=5)
+        Entry(product_frame, textvariable=self.ProdCode, font=('Arial', 12), width=18, state='readonly').grid(row=1, column=1, padx=5, pady=2)
+        
+        Label(product_frame, text="Cost Per Day:", font=('Arial', 12, 'bold')).grid(row=1, column=2, sticky=W, padx=5)
+        Entry(product_frame, textvariable=self.CostPDay, font=('Arial', 12), width=18, state='readonly').grid(row=1, column=3, padx=5, pady=2)
+        
+        # Credit and Payment Frame
+        credit_frame = ttk.LabelFrame(parent, text="Credit & Payment Details", padding=10)
+        credit_frame.pack(fill=X, padx=10, pady=5)
+        
+        # Row 1
+        Label(credit_frame, text="Credit Limit:", font=('Arial', 12, 'bold')).grid(row=0, column=0, sticky=W, padx=5)
+        self.cboCreLimit = ttk.Combobox(credit_frame, textvariable=self.CreLimit, state='readonly', 
+                                       font=('Arial', 12), width=15)
+        self.cboCreLimit['values'] = ('Select', '£150', '£200', '£250', '£300')
+        self.cboCreLimit.current(0)
+        self.cboCreLimit.grid(row=0, column=1, padx=5, pady=2)
+        
+        Label(credit_frame, text="Credit Check:", font=('Arial', 12, 'bold')).grid(row=0, column=2, sticky=W, padx=5)
+        self.cboCreCheck = ttk.Combobox(credit_frame, textvariable=self.CreCheck, state='readonly',
+                                       font=('Arial', 12), width=15)
+        self.cboCreCheck['values'] = ('Select', 'Yes', 'No')
+        self.cboCreCheck.current(0)
+        self.cboCreCheck.grid(row=0, column=3, padx=5, pady=2)
+        
+        # Row 2
+        Label(credit_frame, text="Settlement Due:", font=('Arial', 12, 'bold')).grid(row=1, column=0, sticky=W, padx=5)
+        Entry(credit_frame, textvariable=self.SettDueDay, font=('Arial', 12), width=18, state='readonly').grid(row=1, column=1, padx=5, pady=2)
+        
+        Label(credit_frame, text="Payment Due:", font=('Arial', 12, 'bold')).grid(row=1, column=2, sticky=W, padx=5)
+        self.cboPaymentD = ttk.Combobox(credit_frame, textvariable=self.PaymentD, state='readonly', 
+                                       font=('Arial', 12), width=15)
+        self.cboPaymentD['values'] = ('Select', 'Yes', 'No')
+        self.cboPaymentD.current(0)
+        self.cboPaymentD.grid(row=1, column=3, padx=5, pady=2)
+        
+        # Row 3
+        Label(credit_frame, text="Discount:", font=('Arial', 12, 'bold')).grid(row=2, column=0, sticky=W, padx=5)
+        self.cboDiscount = ttk.Combobox(credit_frame, textvariable=self.Discount, state='readonly', 
+                                       font=('Arial', 12), width=15)
+        self.cboDiscount['values'] = ('Select', '0%', '5%', '10%', '15%', '20%')
+        self.cboDiscount.current(0)
+        self.cboDiscount.grid(row=2, column=1, padx=5, pady=2)
+        
+        Label(credit_frame, text="Deposit:", font=('Arial', 12, 'bold')).grid(row=2, column=2, sticky=W, padx=5)
+        self.cboDeposit = ttk.Combobox(credit_frame, textvariable=self.Deposit, state='readonly', 
+                                      font=('Arial', 12), width=15)
+        self.cboDeposit['values'] = ('Select', 'Yes', 'No')
+        self.cboDeposit.current(0)
+        self.cboDeposit.grid(row=2, column=3, padx=5, pady=2)
+        
+        # Row 4
+        Label(credit_frame, text="Pay Due Day:", font=('Arial', 12, 'bold')).grid(row=3, column=0, sticky=W, padx=5)
+        Entry(credit_frame, textvariable=self.PayDueDay, font=('Arial', 12), width=18, state='readonly').grid(row=3, column=1, padx=5, pady=2)
+        
+        Label(credit_frame, text="Payment Method:", font=('Arial', 12, 'bold')).grid(row=3, column=2, sticky=W, padx=5)
+        self.cboPaymentM = ttk.Combobox(credit_frame, textvariable=self.PaymentM, state='readonly',
+                                       font=('Arial', 12), width=15)
+        self.cboPaymentM['values'] = ('Select', 'Cash', 'Visa Card', 'Master Card', 'Debit Card')
+        self.cboPaymentM.current(0)
+        self.cboPaymentM.grid(row=3, column=3, padx=5, pady=2)
+        
+        # Checkboxes and Info Frame
+        check_info_frame = Frame(parent, bg='#34495e')
+        check_info_frame.pack(fill=X, padx=10, pady=5)
+        
+        # Left side - Checkboxes
+        check_frame = ttk.LabelFrame(check_info_frame, text="Customer Checks", padding=10)
+        check_frame.pack(side=LEFT, fill=BOTH, expand=True, padx=(0, 5))
+        
+        self.chkCheckCredit = Checkbutton(check_frame, text="Check Credit", variable=self.var1, 
+                                         font=('Arial', 12), command=self.check_credit)
+        self.chkCheckCredit.pack(anchor=W, pady=2)
+        
+        self.chkTermAgreed = Checkbutton(check_frame, text="Term Agreed", variable=self.var2, 
+                                        font=('Arial', 12), command=self.term_agreed)
+        self.chkTermAgreed.pack(anchor=W, pady=2)
+        
+        self.chkAccountOnHold = Checkbutton(check_frame, text="Account On Hold", variable=self.var3, 
+                                           font=('Arial', 12), command=self.account_on_hold)
+        self.chkAccountOnHold.pack(anchor=W, pady=2)
+        
+        self.chkRestrictMailing = Checkbutton(check_frame, text="Restrict Mailing", variable=self.var4, 
+                                             font=('Arial', 12), command=self.restricted_mails)
+        self.chkRestrictMailing.pack(anchor=W, pady=2)
+        
+        # Right side - Info displays
+        info_frame = ttk.LabelFrame(check_info_frame, text="Status Information", padding=10)
+        info_frame.pack(side=RIGHT, fill=BOTH, expand=True, padx=(5, 0))
+        
+        self.txtInfo0 = Text(info_frame, height=2, width=50, font=('Arial', 9), wrap=WORD)
+        self.txtInfo0.pack(pady=2)
+        
+        self.txtInfo1 = Text(info_frame, height=2, width=50, font=('Arial', 9), wrap=WORD)
+        self.txtInfo1.pack(pady=2)
+        
+        self.txtInfo2 = Text(info_frame, height=2, width=50, font=('Arial', 9), wrap=WORD)
+        self.txtInfo2.pack(pady=2)
+        
+        self.txtInfo3 = Text(info_frame, height=2, width=50, font=('Arial', 9), wrap=WORD)
+        self.txtInfo3.pack(pady=2)
+        
+        # Buttons Frame
+        button_frame = Frame(parent, bg='#34495e')
+        button_frame.pack(fill=X, padx=10, pady=10)
+        
+        self.btnTotal = Button(button_frame, text="Calculate Total", font=('Arial', 14, 'bold'), 
+                              bg='#27ae60', fg='white', padx=20, pady=10, command=self.calculate_total)
+        self.btnTotal.pack(side=LEFT, padx=5)
+        
+        self.btnSave = Button(button_frame, text="Save Rental", font=('Arial', 14, 'bold'), 
+                             bg='#3498db', fg='white', padx=20, pady=10, command=self.save_rental)
+        self.btnSave.pack(side=LEFT, padx=5)
+        
+        self.btnReset = Button(button_frame, text="Reset", font=('Arial', 14, 'bold'), 
+                              bg='#f39c12', fg='white', padx=20, pady=10, command=self.reset_form)
+        self.btnReset.pack(side=LEFT, padx=5)
+        
+        self.btnExit = Button(button_frame, text="Exit", font=('Arial', 14, 'bold'), 
+                             bg='#e74c3c', fg='white', padx=20, pady=10, command=self.exit_app)
+        self.btnExit.pack(side=RIGHT, padx=5)
