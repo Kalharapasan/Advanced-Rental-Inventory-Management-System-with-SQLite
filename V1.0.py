@@ -819,7 +819,7 @@ class AdvancedRentalInventory:
         self.cboDeposit.current(0)
         self.cboPaymentM.current(0)        
     
-     def exit_app(self):
+    def exit_app(self):
         """Exit application"""
         if messagebox.askyesno("Exit", "Are you sure you want to exit?"):
             self.root.destroy()
@@ -1122,6 +1122,9 @@ class AdvancedRentalInventory:
         self.customer_email.set("")
         self.customer_address.set("")
         
-        
+if __name__ == '__main__':
+    root = tk.Tk()
+    app = AdvancedRentalInventory(root)
+    root.mainloop()      
     
     
