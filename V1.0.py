@@ -980,6 +980,54 @@ class AdvancedRentalInventory:
         except Exception as e:
             messagebox.showerror("Error", f"Failed to generate chart: {str(e)}")
     
+    def show_monthly_revenue(self):
+        """Show monthly revenue chart"""
+        try:
+            self.fig.clear()
+            
+            conn = sqlite3.connect(self.db_manager.db_name)
+            cursor = conn.cursor()
+            cursor.execute('''
+                SELECT strftime('%Y-%m', created_date) as month, 
+                       SUM(total) as revenue, COUNT(*) as count
+                FROM rentals 
+                GROUP BY strftime('%Y-%m', created_date)
+                ORDER BY month
+            ''')
+            data = cursor.fetchall()
+            conn.close()
+            
+            if data:
+                months = [row[0] for row in data]
+                revenues = [row[1] for row in data]
+                counts = [row[2] for row in data]
+                
+                ax1 = self.fig.add_subplot(211)
+                ax2 = self.fig.add_subplot(212)
+                
+                # Revenue chart
+                ax1.bar(months, revenues, color='#27ae60')
+                ax1.set_title('Monthly Revenue', color='white')
+                ax1.set_ylabel('Revenue (£)', color='white')
+                
+                # Count chart
+                ax2.bar(months, counts, color='#3498db')
+                ax2.set_title('Monthly Rental Count', color='white')
+                ax2.set_ylabel('Number of Rentals', color='white')
+            
+            # Style the figure
+            self.fig.patch.set_facecolor('#2c3e50')
+            for ax in self.fig.get_axes():
+                ax.set_facecolor('#34495e')
+                ax.tick_params(colors='white', axis='x', rotation=45)
+                ax.xaxis.label.set_color('white')
+                ax.yaxis.label.set_color('white')
+            
+            self.fig.tight_layout()
+            self.canvas.draw()
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to generate chart: {str(e)}")
     
         
         
