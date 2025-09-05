@@ -726,3 +726,51 @@ class AdvancedRentalInventory:
             
         except ValueError as e:
             messagebox.showerror("Error", "Please enter valid numeric values")
+    
+    def save_rental(self):
+        """Save rental to database"""
+        try:
+            if not self.Total.get() or self.Total.get() == "":
+                messagebox.showerror("Error", "Please calculate total first")
+                return
+            
+            # Prepare rental data
+            rental_data = (
+                1,  # customer_id (default for now)
+                self.Receipt_Ref.get(),
+                self.ProdType.get(),
+                self.ProdCode.get(),
+                self.NoDays.get(),
+                float(self.CostPDay.get().replace('£', '')) if self.CostPDay.get() else 0,
+                self.AcctOpen.get(),
+                self.AppDate.get(),
+                self.NextCreditReview.get(),
+                int(self.LastCreditReview.get()) if self.LastCreditReview.get() else 0,
+                self.DateRev.get(),
+                self.CreLimit.get(),
+                self.CreCheck.get(),
+                int(self.SettDueDay.get()) if self.SettDueDay.get() else 0,
+                self.PaymentD.get(),
+                float(self.Discount.get().replace('%', '')) if self.Discount.get() and self.Discount.get() != 'Select' else 0,
+                self.Deposit.get(),
+                self.PayDueDay.get(),
+                self.PaymentM.get(),
+                self.var1.get(),
+                self.var2.get(),
+                self.var3.get(),
+                self.var4.get(),
+                float(self.Tax.get().replace('£', '')) if self.Tax.get() else 0,
+                float(self.SubTotal.get().replace('£', '')) if self.SubTotal.get() else 0,
+                float(self.Total.get().replace('£', '')) if self.Total.get() else 0
+            )
+            
+            self.db_manager.save_rental(rental_data)
+            messagebox.showinfo("Success", "Rental saved successfully!")
+            self.reset_form()
+            self.load_all_rentals()  # Refresh history
+            
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to save rental: {str(e)}")
+            
+            
+    
