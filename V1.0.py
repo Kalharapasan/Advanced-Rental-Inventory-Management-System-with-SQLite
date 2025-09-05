@@ -679,3 +679,50 @@ class AdvancedRentalInventory:
             self.txtInfo3.insert(END, "Restricted Mails for Customer")
         else:
             self.txtInfo3.delete("1.0", END)
+    
+    def calculate_total(self):
+        """Calculate total cost and generate receipt"""
+        try:
+            if not self.LastCreditReview.get() or not self.SettDueDay.get():
+                messagebox.showerror("Error", "Please select product type and number of days")
+                return
+            
+            n = float(self.LastCreditReview.get())
+            s = float(self.SettDueDay.get())
+            price = n * s
+            
+            # Apply discount
+            discount_str = self.Discount.get().replace('%', '')
+            if discount_str and discount_str != 'Select':
+                discount_rate = float(discount_str) / 100
+                price = price * (1 - discount_rate)
+            
+            ST = "£" + str('%.2f' % price)
+            iTax = "£" + str('%.2f' % (price * 0.15))
+            self.Tax.set(iTax)
+            self.SubTotal.set(ST)
+            TC = "£" + str('%.2f' % ((price * 0.15) + price))
+            self.Total.set(TC)
+            
+            # Generate receipt
+            self.txtReceipt.delete("1.0", END)
+            x = random.randint(10908, 500876)
+            randomRef = str(x)
+            self.Receipt_Ref.set("BILL" + randomRef)
+            
+            self.txtReceipt.insert(END, 'Receipt Ref:\t\t' + self.Receipt_Ref.get() + '\t\t' + str(self.AppDate.get()) + "\n")
+            self.txtReceipt.insert(END, 'Product Type:\t\t' + self.ProdType.get() + "\n")
+            self.txtReceipt.insert(END, 'Product Code:\t\t' + self.ProdCode.get() + "\n")
+            self.txtReceipt.insert(END, 'No of Days:\t\t' + self.NoDays.get() + "\n")
+            self.txtReceipt.insert(END, 'Account Open:\t\t' + self.AcctOpen.get() + "\n")
+            self.txtReceipt.insert(END, 'Next Credit Review:\t' + str(self.NextCreditReview.get()) + "\n")
+            self.txtReceipt.insert(END, 'Last Credit Review:\t' + str(self.LastCreditReview.get()) + "\n")
+            self.txtReceipt.insert(END, 'Discount:\t\t' + self.Discount.get() + "\n")
+            self.txtReceipt.insert(END, '\nTax:\t\t\t' + self.Tax.get() + "\n")
+            self.txtReceipt.insert(END, 'SubTotal:\t\t' + str(self.SubTotal.get()) + "\n")
+            self.txtReceipt.insert(END, 'Total Cost:\t\t' + str(self.Total.get()) + "\n")
+            self.txtReceipt.insert(END, '\n' + '='*50 + '\n')
+            self.txtReceipt.insert(END, 'Thank you for your business!')
+            
+        except ValueError as e:
+            messagebox.showerror("Error", "Please enter valid numeric values")
