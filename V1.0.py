@@ -840,3 +840,25 @@ class AdvancedRentalInventory:
                 f"£{rental[25]:.2f}",  # total
                 rental[26]  # created_date
             ))
+            
+    def search_rentals(self):
+        """Search rentals"""
+        search_term = self.search_var.get()
+        if not search_term:
+            self.load_all_rentals()
+            return
+        
+        for item in self.history_tree.get_children():
+            self.history_tree.delete(item)
+        
+        rentals = self.db_manager.search_rentals(search_term)
+        for rental in rentals:
+            self.history_tree.insert('', 'end', values=(
+                rental[0],  # rental_id
+                rental[2],  # receipt_ref
+                rental[3],  # product_type
+                rental[5],  # no_days
+                f"£{rental[25]:.2f}",  # total
+                rental[26]  # created_date
+            ))        
+    
