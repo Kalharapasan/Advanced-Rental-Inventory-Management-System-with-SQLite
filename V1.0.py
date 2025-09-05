@@ -514,3 +514,36 @@ class AdvancedRentalInventory:
         
         # Initialize with product distribution chart
         self.show_product_distribution()
+    
+    def setup_customer_tab(self):
+        """Setup customer management tab"""
+        customer_frame = Frame(self.customer_tab, bg='#2c3e50')
+        customer_frame.pack(fill=BOTH, expand=True, padx=10, pady=10)
+        
+        # Customer input frame
+        input_frame = ttk.LabelFrame(customer_frame, text="Customer Information", padding=10)
+        input_frame.pack(fill=X, pady=(0, 10))
+        
+        # Row 1
+        Label(input_frame, text="Customer Name:", font=('Arial', 12, 'bold')).grid(row=0, column=0, sticky=W, padx=5)
+        Entry(input_frame, textvariable=self.customer_name, font=('Arial', 12), width=25).grid(row=0, column=1, padx=5, pady=2)
+        
+        Label(input_frame, text="Phone:", font=('Arial', 12, 'bold')).grid(row=0, column=2, sticky=W, padx=5)
+        Entry(input_frame, textvariable=self.customer_phone, font=('Arial', 12), width=25).grid(row=0, column=3, padx=5, pady=2)
+        
+        # Row 2
+        Label(input_frame, text="Email:", font=('Arial', 12, 'bold')).grid(row=1, column=0, sticky=W, padx=5)
+        Entry(input_frame, textvariable=self.customer_email, font=('Arial', 12), width=25).grid(row=1, column=1, padx=5, pady=2)
+        
+        Label(input_frame, text="Address:", font=('Arial', 12, 'bold')).grid(row=1, column=2, sticky=W, padx=5)
+        Entry(input_frame, textvariable=self.customer_address, font=('Arial', 12), width=25).grid(row=1, column=3, padx=5, pady=2)
+        
+        # Buttons
+        button_frame = Frame(input_frame)
+        button_frame.grid(row=2, column=0, columnspan=4, pady=10)
+        
+        Button(button_frame, text="Add Customer", font=('Arial', 12), bg='#27ae60', fg='white',
+               command=self.add_customer).pack(side=LEFT, padx=5)
+        
+        Button(button_frame, text="Clear", font=('Arial', 12), bg='#f39c12', fg='white',
+               command=self.clear_customer_form).pack(side=LEFT, padx=5)
