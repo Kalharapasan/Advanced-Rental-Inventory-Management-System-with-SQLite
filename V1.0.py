@@ -227,4 +227,21 @@ class AdvancedRentalInventory:
         self.setup_history_tab()
         self.setup_analytics_tab()
         self.setup_customer_tab()
+    
+    def setup_rental_tab(self):
+        """Setup the main rental tab with original functionality"""
+        # Main container
+        main_container = Frame(self.rental_tab, bg='#2c3e50')
+        main_container.pack(fill=BOTH, expand=True, padx=10, pady=10)
         
+        # Left and Right frames
+        left_frame = Frame(main_container, bg='#34495e', relief=RIDGE, bd=3)
+        left_frame.pack(side=LEFT, fill=BOTH, expand=True, padx=(0, 5))
+        
+        right_frame = Frame(main_container, bg='#34495e', relief=RIDGE, bd=3)
+        right_frame.pack(side=RIGHT, fill=BOTH, padx=(5, 0))
+        
+        # Setup left frame sections
+        self.setup_left_frame(left_frame)
+        self.setup_right_frame(right_frame)
+    
