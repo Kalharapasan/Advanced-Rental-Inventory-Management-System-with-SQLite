@@ -437,3 +437,55 @@ class AdvancedRentalInventory:
         Label(total_frame, text="Total:", font=('Arial', 12, 'bold')).grid(row=2, column=0, sticky=W, padx=5)
         Entry(total_frame, textvariable=self.Total, font=('Arial', 12), width=25, state='readonly').grid(row=2, column=1, padx=5, pady=2)
     
+    def setup_history_tab(self):
+        """Setup rental history tab"""
+        history_frame = Frame(self.history_tab, bg='#2c3e50')
+        history_frame.pack(fill=BOTH, expand=True, padx=10, pady=10)
+        
+        # Search Frame
+        search_frame = ttk.LabelFrame(history_frame, text="Search Rentals", padding=10)
+        search_frame.pack(fill=X, pady=(0, 10))
+        
+        Label(search_frame, text="Search:", font=('Arial', 12, 'bold')).pack(side=LEFT, padx=5)
+        self.search_var = StringVar()
+        search_entry = Entry(search_frame, textvariable=self.search_var, font=('Arial', 12), width=30)
+        search_entry.pack(side=LEFT, padx=5)
+        
+        Button(search_frame, text="Search", font=('Arial', 12), bg='#3498db', fg='white',
+               command=self.search_rentals).pack(side=LEFT, padx=5)
+        
+        Button(search_frame, text="Show All", font=('Arial', 12), bg='#27ae60', fg='white',
+               command=self.load_all_rentals).pack(side=LEFT, padx=5)
+        
+        Button(search_frame, text="Export to PDF", font=('Arial', 12), bg='#e74c3c', fg='white',
+               command=self.export_to_pdf).pack(side=RIGHT, padx=5)
+        
+        # Treeview for displaying rental history
+        tree_frame = Frame(history_frame, bg='#2c3e50')
+        tree_frame.pack(fill=BOTH, expand=True)
+        
+        self.history_tree = ttk.Treeview(tree_frame, columns=('ID', 'Receipt', 'Product', 'Days', 'Total', 'Date'), show='headings')
+        self.history_tree.heading('ID', text='ID')
+        self.history_tree.heading('Receipt', text='Receipt Ref')
+        self.history_tree.heading('Product', text='Product Type')
+        self.history_tree.heading('Days', text='No. Days')
+        self.history_tree.heading('Total', text='Total')
+        self.history_tree.heading('Date', text='Date')
+        
+        # Configure column widths
+        self.history_tree.column('ID', width=50)
+        self.history_tree.column('Receipt', width=150)
+        self.history_tree.column('Product', width=100)
+        self.history_tree.column('Days', width=80)
+        self.history_tree.column('Total', width=100)
+        self.history_tree.column('Date', width=150)
+        
+        history_scroll = ttk.Scrollbar(tree_frame, orient=VERTICAL, command=self.history_tree.yview)
+        self.history_tree.configure(yscrollcommand=history_scroll.set)
+        
+        self.history_tree.pack(side=LEFT, fill=BOTH, expand=True)
+        history_scroll.pack(side=RIGHT, fill=Y)
+        
+        # Load initial data
+        self.load_all_rentals()
+        
